@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import axiosClient from "../axios-client.js";
-import { Box, IconButton, Typography, useTheme, createTheme, ThemeProvider } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../../theme.js";
@@ -12,9 +12,8 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import InventoryIcon from '@mui/icons-material/Inventory';
 import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
-import admin_image from "../img/admin.png"
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import admin_image from "../img/admin.png";
+import { useTheme } from "@mui/material/styles"; // Add this import
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -37,24 +36,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const DefaultLayout = () => {
   const { user, token, setUser, setToken, notification } = useStateContext();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-  };
-
-  // Define light and dark themes
-  const lightTheme = createTheme({
-    palette: {
-      mode: "light",
-    },
-  });
-
-  const darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
 
   if (!token) {
     return <Navigate to="/login" />;
@@ -76,46 +57,39 @@ const DefaultLayout = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <Box
-        sx={{
-          display: "flex",
-          height: "100vh",
-        }}
-      >
-        <Sidebar isDarkMode={isDarkMode} />
-        <div className="content" style={{ flex: 1, overflow: "auto", backgroundColor: "#fff", color: "#000" }}>
-          <header
-            style={{
-              background: "#5b08a7",
-              color: "#fff",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-              padding: "1rem",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>Header</div>
-            <div>
-              {/* Light mode and dark mode icons */}
-              <IconButton onClick={toggleDarkMode} style={{ color: "#fff" }}>
-                {isDarkMode ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
-              </IconButton>
-
-              {user.name} &nbsp; &nbsp;
-              <a onClick={onLogout} className="btn-logout" href="#">
-                Logout
-              </a>
-            </div>
-          </header>
-          <main>
-            <Outlet />
-          </main>
-          {notification && <div className="notification">{notification}</div>}
-        </div>
-      </Box>
-    </ThemeProvider>
+    <Box
+      sx={{
+        display: "flex",
+        height: "100vh",
+      }}
+    >
+      <Sidebar />
+      <div className="content" style={{ flex: 1, overflow: "auto", backgroundColor: "#fff", color: "#000" }}>
+        <header
+          style={{
+            background: "#5b08a7",
+            color: "#fff",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            padding: "1rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div>Header</div>
+          <div>
+            {user.name} &nbsp; &nbsp;
+            <a onClick={onLogout} className="btn-logout" href="#">
+              Logout
+            </a>
+          </div>
+        </header>
+        <main>
+          <Outlet />
+        </main>
+        {notification && <div className="notification">{notification}</div>}
+      </div>
+    </Box>
   );
 };
 
@@ -127,25 +101,23 @@ const Sidebar = () => {
 
   return (
     <Box
-      sx={{
-        height: "100vh",
-        // overflowY: "auto",
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
+    sx={{
+      "& .pro-sidebar-inner": {
+        background: `${colors.primary[400]} !important`,
+      },
+      "& .pro-icon-wrapper": {
+        backgroundColor: "transparent !important",
+      },
+      "& .pro-inner-item": {
+        padding: "5px 35px 5px 20px !important",
+      },
+      "& .pro-inner-item:hover": {
+        color: "#868dfb !important",
+      },
+      "& .pro-menu-item.active": {
+        color: "#6870fa !important",
+      },
+    }}
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">

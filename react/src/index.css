@@ -98,7 +98,7 @@ table {
     border-spacing: 0;
     border-collapse: collapse;
     background-color: #fff; /* Default background color for light mode */
-    color: #000; /* Default text color for light mode */
+    color: #f2f0f0; /* Default text color for light mode */
 }
 
 table > thead > tr > th {
@@ -113,23 +113,23 @@ table > tbody > tr > td {
     border-bottom: 1px solid #efefef; /* Default border color for light mode */
     white-space: nowrap;
     background-color: #fff; /* Default background color for light mode */
-    color: #000; /* Default text color for light mode */
+    color: #edeaea; /* Default text color for light mode */
 }
 
 /* Dark mode styles */
 body[data-theme="dark"] table {
-    background-color: #333; /* Dark mode background color for the table */
+    background-color: #ece7e7; /* Dark mode background color for the table */
     color: #fff; /* Dark mode text color for the table */
 }
 
 body[data-theme="dark"] table > thead > tr > th {
-    background-color: #111; /* Dark mode background color for the table header */
+    background-color: #f8f3f3; /* Dark mode background color for the table header */
     color: #fff; /* Dark mode text color for the table header */
 }
 
 body[data-theme="dark"] table > tbody > tr > td {
-    border-bottom: 1px solid #555; /* Dark mode border color for the table rows */
-    background-color: #333; /* Dark mode background color for the table rows */
+    border-bottom: 1px solid #fbf4f4; /* Dark mode border color for the table rows */
+    background-color: #fdfcfc; /* Dark mode background color for the table rows */
     color: #fff; /* Dark mode text color for the table rows */
 }
 
