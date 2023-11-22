@@ -13,6 +13,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import InventoryIcon from '@mui/icons-material/Inventory';
 import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
 import admin_image from "../img/admin.png";
+import background_img from "../img/background.jpg";
 import { useTheme } from "@mui/material/styles"; // Add this import
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -117,7 +118,7 @@ const Sidebar = () => {
       "& .pro-menu-item.active": {
         color: "#6870fa !important",
       },
-    }}
+    }}  
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
