@@ -49,13 +49,14 @@ export default function Users() {
             <th>Name</th>
             <th>Email</th>
             <th>Create Date</th>
+            <th>Phone Number</th>
             <th>Actions</th>
           </tr>
           </thead>
           {loading &&
             <tbody>
             <tr>
-              <td colSpan="5" class="text-center">
+              <td colSpan="6" class="text-center">
                 Loading...
               </td>
             </tr>
@@ -69,10 +70,11 @@ export default function Users() {
                 <td>{u.name}</td>
                 <td>{u.email}</td>
                 <td>{u.created_at}</td>
+                <td>{u.phone_number}</td>
                 <td>
                   <Link className="btn-edit" to={'/users/' + u.id}>Edit</Link>
                   &nbsp;
-                  <button className="btn-delete" onClick={ev => onDeleteClick(u)}>Delete</button>
+                  <button className="btn-delete" onClick={ev =>   onDeleteClick(u)}>Delete</button>
                 </td>
               </tr>
             ))}
