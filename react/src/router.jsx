@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       },      
       {
         path: '/inventory',
-        element: <Users/>
+        element: <Input/>
       },      
       {
         path: '/reports',
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       },      
       {
         path: '/form',
-        element: <Form/>
+        element: <Users/>
       },     
       {
         path: '/team',

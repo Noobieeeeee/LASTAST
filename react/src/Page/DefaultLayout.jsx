@@ -86,7 +86,7 @@ const DefaultLayout = () => {
       <div className="content" style={{ flex: 1, overflow: "auto", backgroundColor: "#fff", color: "#000" }}>
         <header
           style={{
-            background: "#5b08a7",
+            background: "#34A853",
             color: "#fff",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
             padding: "1rem",
@@ -174,8 +174,8 @@ const Sidebar = ({ user }) => {
               <Box display="flex" justifyContent="center" alignItems="center">
                 <img
                   alt="profile-user"
-                  width="100px"
-                  height="100px"
+                  width="125px"
+                  height="125px"
                   src={admin_image}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
                 />

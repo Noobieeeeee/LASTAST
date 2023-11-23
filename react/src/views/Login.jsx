@@ -170,7 +170,7 @@ export default function Login() {
               style={inputStyle}
             />
             <span style={passwordEyeContainerStyle} onClick={togglePasswordVisibility}>
-              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+              {showPassword ? <VisibilityIcon /> : < VisibilityOffIcon/>}
             </span>
           </div>
           <button type="submit" style={submitStyle}>Submit</button>
