@@ -1,15 +1,17 @@
 import React, { createRef, useState } from "react";
-import { Link } from "react-router-dom";
 import axiosClient from "../axios-client.js";
 import { useStateContext } from "../context/ContextProvider.jsx";
 import background_img from "../img/background.jpg";
 import logo_img from "../img/logo.jpg";
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 export default function Login() {
   const emailRef = createRef();
   const passwordRef = createRef();
   const { setUser, setToken } = useStateContext();
   const [message, setMessage] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = (ev) => {
     ev.preventDefault();
@@ -20,7 +22,6 @@ export default function Login() {
     };
 
     // Comment out the following block if you don't want to send a request to the server
-    
     axiosClient
       .post("/login", payload)
       .then(({ data }) => {
@@ -29,11 +30,16 @@ export default function Login() {
       })
       .catch((err) => {
         const response = err.response;
-        if (response && response.status === 422) {
+        if (response && response.status === 401) {
+          setMessage("Invalid username or password. Please try again.");
+        } else if (response && response.status === 422) {
           setMessage(response.data.message);
         }
       });
-    
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const containerStyle = {
@@ -109,6 +115,18 @@ export default function Login() {
     height: '50px',
     color: '#fff',
     fontSize: '15px', // Increase font size
+    position: 'relative',
+  };
+
+  const passwordEyeContainerStyle = {
+    position: 'absolute',
+    top: '50%',
+    right: '10px',
+    transform: 'translateY(-50%)',
+    cursor: 'pointer',
+    color: '#fff',
+    fontSize: '24px',
+    fontWeight: 'bold',
   };
 
   const submitStyle = {
@@ -143,15 +161,22 @@ export default function Login() {
             required
             style={inputStyle}
           />
-          <p style={{ margin: '0', padding: '0', fontWeight: 'bold', color: '#fff', fontSize: '20px' }}>Password</p>
-          <input
-            placeholder="Enter Password"
-            type="password"
-            ref={passwordRef}
-            required
-            style={inputStyle}
-          />
+          <div style={{ position: 'relative' }}>
+            <input
+              placeholder="Enter Password"
+              type={showPassword ? 'text' : 'password'}
+              ref={passwordRef}
+              required
+              style={inputStyle}
+            />
+            <span style={passwordEyeContainerStyle} onClick={togglePasswordVisibility}>
+              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </span>
+          </div>
           <button type="submit" style={submitStyle}>Submit</button>
+          {message && (
+            <p style={{ color: 'red', marginTop: '10px' }}>{message}</p>
+          )}
         </form>
       </div>
     </div>
