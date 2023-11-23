@@ -91,11 +91,12 @@ export default function Login() {
 
   const textBelowLogoStyle = {
     color: '#fff',
-    fontSize: '30px', // Increased font size
+    fontSize: '25px', // Increased font size
     margin: '0', // No space between sentences and username
     fontWeight: 'bold',
     textAlign: 'center', // Center-align the text
     textTransform: 'uppercase', // Apply uppercase transformation
+    fontFamily: 'Open Sans, sans-serif',
   };
 
   const formStyle = {
@@ -153,26 +154,30 @@ export default function Login() {
           <p style={textBelowLogoStyle}>GENERAL SERVICES OFFICE</p>
         </div>
         <form onSubmit={onSubmit} style={formStyle}>
-          <p style={{ margin: '0', padding: '0', fontWeight: 'bold', color: '#fff', fontSize: '20px' }}>Username</p>
-          <input
-            placeholder="Enter Username"
-            type="email"
-            ref={emailRef}
-            required
-            style={inputStyle}
-          />
-          <div style={{ position: 'relative' }}>
-            <input
-              placeholder="Enter Password"
-              type={showPassword ? 'text' : 'password'}
-              ref={passwordRef}
-              required
-              style={inputStyle}
-            />
-            <span style={passwordEyeContainerStyle} onClick={togglePasswordVisibility}>
-              {showPassword ? <VisibilityIcon /> : < VisibilityOffIcon/>}
-            </span>
-          </div>
+        <div>
+  <p style={{ margin: '0', padding: '0', fontWeight: 'bold', color: '#fff', fontSize: '20px' }}>Username</p>
+  <input
+    placeholder="Enter Username"
+    type="email"
+    ref={emailRef}
+    required
+    style={inputStyle}
+  />
+
+  <p style={{ margin: '10px 0 0', padding: '0', fontWeight: 'bold', color: '#fff', fontSize: '20px' }}>Password</p>
+  <div style={{ position: 'relative' }}>
+    <input
+      placeholder="Enter Password"
+      type={showPassword ? 'text' : 'password'}
+      ref={passwordRef}
+      required
+      style={inputStyle}
+    />
+    <span style={passwordEyeContainerStyle} onClick={togglePasswordVisibility}>
+      {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon/>}
+    </span>
+  </div>
+</div>
           <button type="submit" style={submitStyle}>Submit</button>
           {message && (
             <p style={{ color: 'red', marginTop: '10px' }}>{message}</p>
