@@ -137,10 +137,11 @@ const Sidebar = ({ user }) => {
           padding: "5px 35px 5px 20px !important",
         },
         "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
+          color: "green !important",
         },
         "& .pro-menu-item.active": {
-          color: "#6870fa !important",
+          color: "green !important", 
+          borderLeft: "4px solid green !important", 
         },
       }}
     >
@@ -177,7 +178,11 @@ const Sidebar = ({ user }) => {
                   width="125px"
                   height="125px"
                   src={admin_image}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                  style={{
+                    cursor: "pointer",
+                    borderRadius: "50%",
+                    border: "4px solid green",
+                  }}
                 />
               </Box>
               <Box textAlign="center">
@@ -189,8 +194,8 @@ const Sidebar = ({ user }) => {
                 >
                   {user.name}
                 </Typography>
-                <Typography variant="h" color={colors.greenAccent[500]}>
-                  VP Admin
+                <Typography variant="h7" style={{ color: "green", fontWeight:"bold" }}>
+                  Admin
                 </Typography>
               </Box>
             </Box>

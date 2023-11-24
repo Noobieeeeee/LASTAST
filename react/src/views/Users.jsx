@@ -3,11 +3,17 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import axiosClient from "../axios-client.js";
 import { Link } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider.jsx";
+import Header from "../components/Header.jsx";
+import { Box, Typography, useTheme } from "@mui/material";
+import { tokens } from "../../../theme";
+
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setNotification } = useStateContext();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   useEffect(() => {
     getUsers();
@@ -65,10 +71,10 @@ export default function Users() {
   ];
 
   return (
-    <div style={{ height: "100%", width: "100%" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Users</h1>
-        <Link className="btn-add" to="/users/new">
+    <div style={{ height: "100%", width: "100%", paddingLeft: "20px"  }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", paddingRight: "20px" }}>
+        <Header title="Users" subtitle="Managing the Team Members" />
+        <Link className="btn-add" to="/users/new" style={{ fontSize: "18px" }}>
           Add new
         </Link>
       </div>
@@ -80,6 +86,7 @@ export default function Users() {
           Toolbar: GridToolbar,
         }}
         loading={loading}
+        autoHeight
       />
     </div>
   );

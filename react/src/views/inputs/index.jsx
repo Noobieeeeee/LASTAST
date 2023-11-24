@@ -20,7 +20,7 @@ const Form = () => {
 
   return (
     <Box m="20px">
-      <Header title="CREATE FORM" subtitle="CREATE A NEW FORM" />
+      <Header title="NEW FORM" subtitle="CREATE A NEW FORM" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -122,7 +122,7 @@ const Form = () => {
                 }
                 sx={{ gridColumn: "span 1" }}
               />
-                            <TextField
+                <TextField
                 fullWidth
                 variant="filled"
                 type="number"
@@ -177,7 +177,9 @@ const Form = () => {
               sx={{ gridColumn: "span 1" }}
             />
             <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 1" }}>
-              <InputLabel htmlFor="unitOfMeasure">Unit of Measure</InputLabel>
+              <InputLabel htmlFor="unitOfMeasure" shrink>
+                Unit of Measure
+              </InputLabel>
               <Select
                 fullWidth
                 native
@@ -231,9 +233,9 @@ const Form = () => {
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.propertyValue}
-              name="propertyValue"
-              error={!!touched.propertyValue && !!errors.propertyValue}
-              helperText={touched.propertyValue && errors.propertyValue}
+              name="propertyNumber"
+              error={!!touched.propertyNumber && !!errors.propertyNumber}
+              helperText={touched.propertyNumber && errors.propertyNumber}
               sx={{ gridColumn: "span 1" }}
             />
             <TextField
@@ -249,11 +251,9 @@ const Form = () => {
               helperText={touched.remarks && errors.remarks}
               sx={{ gridColumn: "span 2" }}
             />
-              
-              
             </Box>
-            <Box display="flex" justifyContent="end" mt="30px" >
-              <Button type="submit" color="secondary" variant="contained">
+            <Box display="flex" justifyContent="end" mt="20px" >
+            <Button type="submit" style={{ backgroundColor: 'green', color: 'white' }} variant="contained">
                 Submit
               </Button>
             </Box>

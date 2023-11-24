@@ -1,5 +1,5 @@
 import { Box, Button, Typography, useTheme } from "@mui/material";
-import { DataGrid,GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 import { mockDataInvoices } from "../../data/mockData";
 import Header from "../../components/Header";
@@ -43,13 +43,19 @@ const Reports = () => {
   ];
 
   return (
-    <Box m="20px">
-        <div style={{ gridColumn: "span 2", textAlign: "start", marginTop: "10px" }}>
-        <Header title="REPORTS" subtitle="List of all pending inputs"  />
-        </div>
-      {/* <Header title="REPORTS" subtitle="List of all pending inputs"  /> */}
+    <Box m="20px 20px 0 20px">
+      <div style={{ display: "flex", justifyContent: "space-between", gridColumn: "span 2", alignItems: "center"}}>
+        <Header title="REPORTS" subtitle="List of all pending inputs" />
+        <Box display="flex">
+          <Button type="submit" style={{ backgroundColor: 'green', color: 'white' }} variant="contained">
+            Accept
+          </Button>
+          <Button type="submit" style={{ backgroundColor: 'red', color: 'white', marginLeft: '10px' }} variant="contained">
+            Deny
+          </Button>
+        </Box>
+      </div>
       <Box
-        m="40px 0 0 0"
         height="75vh"
         sx={{
           "& .MuiDataGrid-root": {
@@ -62,7 +68,7 @@ const Reports = () => {
             color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.greenAccent[700],
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
@@ -70,7 +76,7 @@ const Reports = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.greenAccent[700],
           },
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
@@ -78,18 +84,9 @@ const Reports = () => {
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `${colors.grey[100]} !important`,
           },
-          
         }}
       >
-          <Box display="flex" justifyContent="end" mt="30px">
-            <Button type="submit" color="secondary" variant="contained">
-              Accept
-            </Button>
-            <Button type="submit" style={{ backgroundColor: colors.redAccent[500] }} variant="contained" sx={{ ml: 2 }}>
-              Deny
-            </Button>
-          </Box>
-        <DataGrid checkboxSelection rows={mockDataInvoices} columns={columns} components={{Toolbar:GridToolbar}} />
+        <DataGrid checkboxSelection rows={mockDataInvoices} columns={columns} components={{ Toolbar: GridToolbar }} />
       </Box>
     </Box>
   );
