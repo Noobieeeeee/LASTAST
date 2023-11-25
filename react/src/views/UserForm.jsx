@@ -113,7 +113,7 @@ export default function UserForm() {
               <button className="btn" type="submit" style={{ backgroundColor: "green", borderRadius: "5px", marginRight: "10px" }}>
                 Save
               </button>
-              <button className="btn" onClick={goBackToProfiles} style={{ borderRadius: "5px" }}>
+              <button className="btn" onClick={goBackToProfiles} style={{ borderRadius: "5px" , backgroundColor: "green"}}>
                 Back to Profiles
               </button>
             </div>

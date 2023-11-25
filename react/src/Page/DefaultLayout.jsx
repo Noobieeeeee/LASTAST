@@ -13,6 +13,7 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import InventoryIcon from '@mui/icons-material/Inventory';
 import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
 import admin_image from "../img/admin.png";
+import default_img from "../img/default.png";
 
 import { useTheme } from "@mui/material/styles";
 
@@ -129,6 +130,7 @@ const Sidebar = ({ user }) => {
       sx={{
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
+           borderRight: "4px solid green !important",
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
@@ -177,7 +179,7 @@ const Sidebar = ({ user }) => {
                   alt="profile-user"
                   width="125px"
                   height="125px"
-                  src={admin_image}
+                  src={(user.name && user.name.toLowerCase().includes("xyrus")) ? admin_image : default_img}
                   style={{
                     cursor: "pointer",
                     borderRadius: "50%",
@@ -185,6 +187,7 @@ const Sidebar = ({ user }) => {
                   }}
                 />
               </Box>
+
               <Box textAlign="center">
                 <Typography
                   variant="h5"
