@@ -1,39 +1,130 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, FormControl, InputLabel, Select, FormHelperText } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
-import React from "react";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
-import FormHelperText from "@mui/material/FormHelperText";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axiosClient from "../../axios-client.js";
+import { useNavigate, useParams } from "react-router-dom";
+import { useStateContext } from "../../context/ContextProvider.jsx";
+import { useDropzone } from "react-dropzone";
 
-const Form = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [image, setImage] = useState(null);
+const UserForm = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { setNotification } = useStateContext();
+  const [user, setUser] = useState({
+    id: null,
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    status: "",
+    contact: "",
+  });
+  const [errors, setErrors] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  useEffect(() => {
+    if (id) {
+      setLoading(true);
+      axiosClient
+        .get(`/users/${id}`)
+        .then(({ data }) => {
+          setLoading(false);
+          setUser(data);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+  }, [id]);
+
+  const onDrop = (acceptedFiles) => {
+    // Handle dropped files (acceptedFiles)
+    console.log(acceptedFiles);
+    // You can set the selected image file to the form values or perform other actions here
   };
-  const handleDrop = (event) => {
-    event.preventDefault();
 
-    const file = event.dataTransfer.files[0];
-    setImage(file);
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: "image/*", // Specify accepted file types (images in this case)
+    multiple: false, // Allow only a single file to be dropped
+  });
+
+  const onSubmit = (values) => {
+    const { password, password_confirmation, ...rest } = values;
+
+    if (password === password_confirmation) {
+      const updatedUser = {
+        ...user,
+        ...rest,
+        password: password,
+      };
+
+      if (user.id) {
+        axiosClient
+          .put(`/users/${user.id}`, updatedUser)
+          .then(() => {
+            setNotification("User was successfully updated");
+            navigate("/users");
+          })
+          .catch((err) => {
+            const response = err.response;
+            if (response && response.status === 422) {
+              setErrors(response.data.errors);
+            }
+          });
+      } else {
+        axiosClient
+          .post("/users", updatedUser)
+          .then(() => {
+            setNotification("User was successfully created");
+            navigate("/users");
+          })
+          .catch((err) => {
+            const response = err.response;
+            if (response && response.status === 422) {
+              setErrors(response.data.errors);
+            }
+          });
+      }
+    } else {
+      // Handle password mismatch error
+      setErrors({ password_confirmation: ["Passwords do not match"] });
+    }
   };
 
-  const handleDragOver = (event) => {
-    event.preventDefault();
+  const goBackToProfiles = () => {
+    navigate("/form");
   };
+
+  const validationSchema = yup.object().shape({
+    name: yup.string().required("required"),
+    email: yup.string().email("invalid email").required("required"),
+    password: yup.string().required("required"),
+    password_confirmation: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'Passwords must match')
+      .required('Confirm Password is required'),
+    status: yup.string().required("required"),
+    address1: yup.string().required("address is required"),
+    contact: yup.string().required("contact number is required"),
+  });
 
   return (
-    <Box m="20px" onDrop={handleDrop} onDragOver={handleDragOver}>
+    <Box m="20px">
       <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={checkoutSchema}
+        onSubmit={onSubmit}
+        initialValues={{
+          name: user.name || "",
+          email: user.email || "",
+          password: "",
+          password_confirmation: "",
+          status: user.status || "",
+          address1: "", 
+          contact: "",
+        }}
+        validationSchema={validationSchema}
       >
         {({
           values,
@@ -45,23 +136,26 @@ const Form = () => {
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
-              display="grid"
-              gap="20px" // Adjusted gap between form elements
-              gridTemplateColumns="repeat(5, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
+              display="flex"
+              flexDirection="column"
+              gap="20px"
             >
-              {/* Text: "Create New Account" */}
-              <div style={{ gridColumn: "span 2", textAlign: "start", marginTop: "30px" }}>
-                <Header title="CREATE USER" subtitle="Create a New User Profile" />
-              </div>
-
-              {/*EYES HERE ADJUSTING*/}
-              <div style={{ gridColumn: "span 2", textAlign: "center" }}></div>
-              {/* Drop Box in the upper right corner */}
-              <div style={{ gridColumn: "span 1", textAlign: "right", marginTop: "20px" }}>
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+                gap="20px"
+              >
+                <div>
+                  {id ? (
+                    <Header title={`Update User: ${user.name}`} />
+                  ) : (
+                    <Header title="New User" subtitle="Create a New User Profile" />
+                  )}
+                </div>
                 <div
+                  {...getRootProps()}
                   style={{
                     border: "2px dashed #ddd",
                     borderRadius: "8px",
@@ -70,85 +164,113 @@ const Form = () => {
                     width: "150px",
                     height: "150px",
                     boxSizing: "border-box",
-                    margin: "auto",
+                    cursor: "pointer",
                   }}
                 >
-                  {image ? (
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt="Dropped Image"
-                      style={{ maxWidth: "100%", maxHeight: "100%" }}
-                    />
-                  ) : (
-                    <div>Drag & Drop or Click to Upload Image</div>
-                  )}
+                  <input {...getInputProps()} />
+                  <p>Click or drag to select an image</p>
                 </div>
-              </div>
-              {/* First Name Input */}
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="First Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.firstName}
-                name="firstName"
-                error={!!touched.firstName && !!errors.firstName}
-                helperText={touched.firstName && errors.firstName}
-                sx={{ gridColumn: "span 2" }}
-              />
+              </Box>
 
-              {/* Last Name Input */}
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Last Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helperText={touched.lastName && errors.lastName}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 1" }}>
-                <InputLabel htmlFor="account">Account Type</InputLabel>
-                <Select
+              <Box
+                display="grid"
+                gap="20px"
+                gridTemplateColumns="repeat(5, minmax(0, 1fr))"
+              >
+                <TextField
                   fullWidth
-                  native
-                  value={values.account}
-                  onChange={handleChange}
+                  variant="filled"
+                  type="text"
+                  label="Name"
                   onBlur={handleBlur}
-                  inputProps={{
-                    name: 'account',
-                    id: 'account',
-                  }}
-                  error={!!touched.account && !!errors.account}
-                >
-                  <option value="Admin">Admin</option>
-                  <option value="Manager">Manager</option>
-                  <option value="Establishment">Establishment</option>
-                </Select>
-                {touched.account && errors.account && (
-                  <FormHelperText error>{errors.account}</FormHelperText>
-                )}
-              </FormControl>
+                  onChange={handleChange}
+                  value={values.name}
+                  name="name"
+                  error={!!touched.name && !!errors.name}
+                  helperText={touched.name && errors.name}
+                  sx={{ gridColumn: "span 2" }}
+                />
 
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 2" }}
-              />
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Email"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.email}
+                  name="email"
+                  error={!!touched.email && !!errors.email}
+                  helperText={touched.email && errors.email}
+                  sx={{ gridColumn: "span 2" }}
+                />
+                
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="text"
+                  label="Contact Number"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.contact}
+                  name="contact"
+                  error={!!touched.contact && !!errors.contact}
+                  helperText={touched.contact && errors.contact}
+                  sx={{ gridColumn: "span 1" }}
+                />
+
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="password"
+                  label="Password"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.password}
+                  name="password"
+                  error={!!touched.password && !!errors.password}
+                  helperText={touched.password && errors.password}
+                  sx={{ gridColumn: "span 2" }}
+                />
+
+                <TextField
+                  fullWidth
+                  variant="filled"
+                  type="password"
+                  label="Password Confirmation"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.password_confirmation}
+                  name="password_confirmation"
+                  error={!!touched.password_confirmation && !!errors.password_confirmation}
+                  helperText={touched.password_confirmation && errors.password_confirmation}
+                  sx={{ gridColumn: "span 2" }}
+                />
+
+                <FormControl fullWidth variant="filled" sx={{ gridColumn: "span 1" }}>
+                  <InputLabel htmlFor="status" shrink>Status</InputLabel>
+                  <Select
+                    fullWidth
+                    native
+                    value={values.status}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    inputProps={{
+                      name: 'status',
+                      id: 'status',
+                    }}
+                    error={!!touched.status && !!errors.status}
+                  >
+                    <option value="">Select Status</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Establishment">Establishment</option>
+                  </Select>
+                  {touched.status && errors.status && (
+                    <FormHelperText error>{errors.status}</FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
               <TextField
                 fullWidth
                 variant="filled"
@@ -157,54 +279,17 @@ const Form = () => {
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.address1}
-                name="address"
-                error={!!touched.address && !!errors.address}
-                helperText={touched.address && errors.address}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Contact Number"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 1" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password1}
-                name="password1"
-                error={!!touched.password1 && !!errors.password1}
-                helperText={touched.password1 && errors.password1}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Re-Enter Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address2}
-                name="password2"
-                error={!!touched.password2 && !!errors.password2}
-                helperText={touched.password2 && errors.password2}
-                sx={{ gridColumn: "span 2" }}
+                name="address1"
+                error={!!touched.address1 && !!errors.address1}
+                helperText={touched.address1 && errors.address1}
               />
             </Box>
-            <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New User
+            <Box display="flex" justifyContent="end" mt="20px" paddingRight="10px">
+              <Button onClick={goBackToProfiles} variant="outlined" style={{ marginRight: '10px', borderRadius: "5px", backgroundColor: "green", color: "white" }}>
+                Back to Profiles
+              </Button>
+              <Button type="submit" color="secondary" variant="contained" style={{ borderRadius: "5px", backgroundColor: "green" }}>
+                {id ? "Update User" : "Create New User"}
               </Button>
             </Box>
           </form>
@@ -214,33 +299,4 @@ const Form = () => {
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  account: yup.string().required("required"),
-  address: yup.string().required("required"),
-  password1: yup.string().required("required"),
-  password2: yup.string().oneOf([yup.ref('password1'), null], 'Passwords must match')
-    .required('Confirm Password is required'),
-});
-
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  contact: "",
-  account: "",
-  address: "",
-  password1: "",
-  password2: "",
-};
-
-export default Form;
+export default UserForm;

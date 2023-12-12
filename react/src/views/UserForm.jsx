@@ -12,6 +12,7 @@ export default function UserForm() {
     email: "",
     password: "",
     password_confirmation: "",
+    status: "",
   });
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -108,7 +109,17 @@ export default function UserForm() {
                 })
               }
               placeholder="Password Confirmation"
+              
             />
+          <select
+            value={user.status}
+            onChange={(ev) => setUser({ ...user, status: ev.target.value })}
+          >
+            <option value="">Select Status</option>
+            <option value="Admin">Admin</option>
+            <option value="Manager">Manager</option>
+            <option value="Establishment">Establishment</option>
+          </select>
             <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
               <button className="btn" type="submit" style={{ backgroundColor: "green", borderRadius: "5px", marginRight: "10px" }}>
                 Save

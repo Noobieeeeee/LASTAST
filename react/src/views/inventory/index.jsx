@@ -1,9 +1,9 @@
-import { Box } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { tokens } from "../../../../theme";
-import { mockDataContacts } from "../../data/mockData";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
+import { mockDataContacts } from "../../data/mockData";
+import { tokens } from "../../../../theme";
 
 const Contacts = () => {
   const theme = useTheme();
@@ -11,56 +11,42 @@ const Contacts = () => {
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar ID" },
-    {
-      field: "name",
-      headerName: "Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      flex: 1,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      flex: 1,
-    },
-    {
-      field: "zipCode",
-      headerName: "Zip Code",
-      flex: 1,
-    },
+    { field: "articles", headerName: "Articles", align: "center", flex: 2 },
+    { field: "description", headerName: "Description", align: "center", flex: 2 },
+    { field: "accountablePerson", headerName: "Accountable Person", align: "center", flex: 2 },
+    { field: "dateOfAssumption", headerName: "Date of Assumption", align: "center", flex: 2 },
+    { field: "quantityPerProperty", headerName: "Quantity per Property", align: "center", flex: 2 },
+    { field: "quantityPerPhysical", headerName: "Quantity per Physical", align: "center", flex: 2 },
+    { field: "shortageOverageQuantity", headerName: "Shortage/Overage Quantity", align: "center", flex: 2 },
+    { field: "shortageOverageValue", headerName: "Shortage/Overage Value", align: "center", flex: 2 },
+    { field: "unitOfMeasure", headerName: "Unit of Measure", align: "center", flex: 2 },
+    { field: "unitValue", headerName: "Unit Value", align: "center", flex: 2 },
+    { field: "physicalValue", headerName: "Physical Value", align: "center", flex: 2 },
+    { field: "propertyNumber", headerName: "Property Number", align: "center", flex: 2 },
+    { field: "remarks", headerName: "Remarks", align: "center", flex: 2 },
+    { field: "registrarId", headerName: "Registrar ID", align: "center", flex: 2 },
   ];
+
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleCellClick = (params) => {
+    const selectedRowIndex = params.row.id - 1; // Adjust index based on your data
+    setSelectedRow(mockDataContacts[selectedRowIndex]);
+    setDialogOpen(true);
+  };
+  
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
 
   return (
     <Box m="20px">
-      <Header
-        title="Inventory"
-        subtitle="Stored Data"
-      />
+      <Header title="Inventory" subtitle="Stored Data" />
       <Box
         m="40px 0 0 0"
         height="75vh"
+        width="100%"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -69,7 +55,7 @@ const Contacts = () => {
             borderBottom: "none",
           },
           "& .name-column--cell": {
-            color: colors.redAccent[300],
+            color: colors.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.greenAccent[700],
@@ -94,8 +80,29 @@ const Contacts = () => {
           rows={mockDataContacts}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
+          onCellClick={handleCellClick}
         />
       </Box>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogContent>
+        {selectedRow && (
+            <div>
+              <Typography variant="h6">Selected Row Details:</Typography>
+              <ul>
+                {columns.map((column) => (
+                  <li key={column.field}>
+                    <strong>{column.headerName}:</strong> {selectedRow[column.field]}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

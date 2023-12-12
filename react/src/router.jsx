@@ -48,11 +48,13 @@ const router = createBrowserRouter([
       },        
       {
         path: '/users/new',
-        element: <UserForm key="userCreate" />
+        // element: <UserForm key="userCreate" />
+        element: <Form/>
       },
       {
         path: '/users/:id',
-        element: <UserForm key="userUpdate" />
+        // element: <UserForm key="userUpdate" />
+        element:<Form key="userUpdate"/>
       }
     ]
   },
