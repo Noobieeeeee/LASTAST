@@ -20,6 +20,7 @@ const UserForm = () => {
     password_confirmation: "",
     status: "",
     contact: "",
+    address1: "",
   });
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(false);

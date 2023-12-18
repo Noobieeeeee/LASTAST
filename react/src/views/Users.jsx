@@ -41,7 +41,7 @@ export default function Users() {
     setDialogOpen(false);
   };
 
-  const getUsers = () => {
+const getUsers = () => {
     setLoading(true);
     axiosClient
       .get("/users")
@@ -55,6 +55,7 @@ export default function Users() {
           setLoading(false);
       });
 };
+
 
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -94,15 +95,17 @@ export default function Users() {
         </Link>
       </div>
       <DataGrid
-        rows={users}
-        columns={columns}
-        components={{
-          Toolbar: GridToolbar,
-        }}
-        loading={loading}
-        // autoHeight
-        onCellClick={handleCellClick}
-      />
+          rows={users}
+          columns={columns}
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          loading={loading}
+          autoHeight
+          onCellClick={handleCellClick}
+          // pagination={false}  // Disable pagination
+        />
+
 
       {/* Dialog to display details of the selected row */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>

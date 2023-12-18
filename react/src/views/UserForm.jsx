@@ -13,7 +13,7 @@ export default function UserForm() {
     password: "",
     password_confirmation: "",
     status: "",
-  });
+  }); 
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(false);
   const { setNotification } = useStateContext();
@@ -120,6 +120,7 @@ export default function UserForm() {
             <option value="Manager">Manager</option>
             <option value="Establishment">Establishment</option>
           </select>
+
             <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
               <button className="btn" type="submit" style={{ backgroundColor: "green", borderRadius: "5px", marginRight: "10px" }}>
                 Save
